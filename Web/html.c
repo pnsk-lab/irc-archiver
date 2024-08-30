@@ -110,7 +110,7 @@ int web_html_generate(const char* name, web_range_t range) {
 		fprintf(f, "		<style type=\"text/css\">\n");
 		fprintf(f, "		</style>\n");
 		fprintf(f, "	</head>\n");
-		fprintf(f, "	<body style=\"padding: 15px; margin: 0 auto; width: 900px;\">\n");
+		fprintf(f, "	<body style=\"padding: 15px; margin: 0 auto; width: 910px;\">\n");
 		fprintf(f, "		<div style=\"padding: 1px 0; margin: 0; text-align: center; background-color: #8080ff;\">\n");
 		fprintf(f, "			<h1>%s</h1>\n", title);
 		fprintf(f, "		</div>\n");
