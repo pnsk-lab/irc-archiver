@@ -3,6 +3,8 @@
 #ifndef __IRCFW_H__
 #define __IRCFW_H__
 
+#define IRCFW_VERSION "1.00"
+
 struct ircfw_message {
 	char* prefix;
 	char* command;

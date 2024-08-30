@@ -17,6 +17,8 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
+#define IRCARC_VERSION "1.00"
+
 int ia_sock;
 struct sockaddr_in ia_addr;
 
@@ -28,6 +30,7 @@ void ia_log(const char* txt) {
 }
 
 extern char* host;
+extern char* admin;
 extern char* realname;
 extern char* nickname;
 extern char* username;
@@ -127,6 +130,8 @@ void ia_bot_loop(void) {
 					sprintf(construct, "JOIN :%s", channels[i]);
 					ircfw_socket_send_cmd(ia_sock, NULL, construct);
 				}
+				sprintf(construct, "NOTICE %s :IRC-Archiver %s is ready to accept requests", admin, IRCARC_VERSION);
+				ircfw_socket_send_cmd(ia_sock, NULL, construct);
 			}
 		} else {
 			if(strcasecmp(ircfw_message.command, "PING") == 0) {
@@ -136,14 +141,35 @@ void ia_bot_loop(void) {
 			} else if(strcasecmp(ircfw_message.command, "PRIVMSG") == 0) {
 				char* prefix = ircfw_message.prefix;
 				char** params = ircfw_message.params;
-				if(prefix != NULL && params != NULL) {
+				int i;
+				int len = 0;
+				if(params != NULL) {
+					for(i = 0; params[i] != NULL; i++)
+						;
+					len = i;
+				}
+				if(prefix != NULL && len == 2) {
+					char* sentin = params[0];
+					char* msg = params[1];
 					char* nick = ia_strdup(prefix);
-					int i;
 					for(i = 0; nick[i] != 0; i++) {
 						if(nick[i] == '!') {
 							nick[i] = 0;
 							break;
 						}
+					}
+
+					if(msg[0] == 1 && msg[strlen(msg) - 1] == 1) {
+						/* CTCP */
+						if(strcasecmp(msg, "\x01VERSION\x01") == 0) {
+							sprintf(construct, "NOTICE %s :\x01VERSION IRC-Archiver %s / IRC Frameworks %s: http://svn.nishi.boats/repo/irc-archiver\x01", nick, IRCARC_VERSION, IRCFW_VERSION);
+							ircfw_socket_send_cmd(ia_sock, NULL, construct);
+						}
+					} else if(sentin[0] == '#') {
+						/* This was sent in channel ; log it */
+						ircfw_socket_send_cmd(ia_sock, NULL, construct);
+					} else {
+						/* Command, I guess */
 					}
 
 					free(nick);

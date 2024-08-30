@@ -3,5 +3,5 @@
 CC = cc
 CFLAGS = -std=c99
 LDFLAGS =
-LIBS =
+LIBS = -lsqlite3
 EXEC =
