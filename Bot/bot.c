@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 
 #include <sys/socket.h>

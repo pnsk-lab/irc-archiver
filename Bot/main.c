@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <stdbool.h>
 
 #include "ia_util.h"
