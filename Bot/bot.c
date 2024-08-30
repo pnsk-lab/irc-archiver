@@ -16,6 +16,7 @@
 #include <time.h>
 #include <string.h>
 #include <strings.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include <sys/socket.h>
@@ -43,6 +44,7 @@ extern char* nickname;
 extern char* username;
 extern char* password;
 extern char* nickserv;
+extern char* webroot;
 extern char* channels[];
 extern int port;
 
