@@ -29,7 +29,7 @@ int ia_db_init(void) {
 	return 0;
 }
 
-char* escape_sql(const char* stuff) {
+char* ia_escape_sql(const char* stuff) {
 	char* str = malloc(strlen(stuff) * 2 + 1);
 	int incr = 0;
 	int i;
@@ -46,9 +46,9 @@ char* escape_sql(const char* stuff) {
 }
 
 int ia_db_put(const char* user, const char* channel, const char* message) {
-	char* eusr = escape_sql(user);
-	char* echn = escape_sql(channel);
-	char* emsg = escape_sql(message);
+	char* eusr = ia_escape_sql(user);
+	char* echn = ia_escape_sql(channel);
+	char* emsg = ia_escape_sql(message);
 
 	char* date = malloc(512);
 	sprintf(date, "%llu", (unsigned long long)time(NULL));

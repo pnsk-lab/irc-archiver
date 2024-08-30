@@ -23,6 +23,8 @@
 
 #define IRCARC_VERSION "1.00"
 
+const char* ircarc_version = IRCARC_VERSION;
+
 int ia_sock;
 struct sockaddr_in ia_addr;
 
@@ -228,7 +230,7 @@ void ia_bot_loop(void) {
 												time_t tfrom = 0;
 												time_t tto = 0;
 												if(frm != NULL) {
-													if(strptime(frm, "%Y-%m-%d-%H:%M:%S", &from_tm) == NULL) {
+													if(strptime(frm, "%Y/%m/%d-%H:%M:%S", &from_tm) == NULL) {
 														sprintf(construct, "PRIVMSG %s :Date parsing failure", nick);
 														ircfw_socket_send_cmd(ia_sock, NULL, construct);
 														break;
@@ -236,7 +238,7 @@ void ia_bot_loop(void) {
 													tfrom = mktime(&from_tm);
 												}
 												if(to != NULL) {
-													if(strptime(to, "%Y-%m-%d-%H:%M:%S", &to_tm) == NULL) {
+													if(strptime(to, "%Y/%m/%d-%H:%M:%S", &to_tm) == NULL) {
 														sprintf(construct, "PRIVMSG %s :Date parsing failure", nick);
 														ircfw_socket_send_cmd(ia_sock, NULL, construct);
 														break;

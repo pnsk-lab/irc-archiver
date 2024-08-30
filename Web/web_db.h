@@ -9,4 +9,12 @@ typedef struct {
 	const char* channel;
 } web_range_t;
 
+typedef struct {
+	char* username;
+	char* message;
+	unsigned long long time;
+} entry_t;
+
+entry_t** web_db_query(web_range_t range);
+
 #endif
