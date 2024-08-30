@@ -22,7 +22,7 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
-#define IRCARC_VERSION "1.00"
+#define IRCARC_VERSION "1.01"
 
 const char* ircarc_version = IRCARC_VERSION;
 
