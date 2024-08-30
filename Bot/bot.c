@@ -106,7 +106,7 @@ void ia_bot_loop(void) {
 
 	bool is_in = false;
 
-	while(1) {
+	while(loop) {
 		int st = ircfw_socket_read_cmd(ia_sock);
 		if(st != 0) {
 			ia_log("Bad response");
@@ -167,9 +167,40 @@ void ia_bot_loop(void) {
 						}
 					} else if(sentin[0] == '#') {
 						/* This was sent in channel ; log it */
-						ircfw_socket_send_cmd(ia_sock, NULL, construct);
 					} else {
 						/* Command, I guess */
+						int i;
+						char* prm = ia_strdup(msg);
+						int incr = 0;
+						for(i = 0;; i++) {
+							if(prm[i] == ' ' || prm[i] == 0) {
+								char oldc = prm[i];
+								prm[i] = 0;
+
+								if(strcasecmp(prm, "help") == 0) {
+									sprintf(construct, "PRIVMSG %s :HELP       Show this help", nick);
+									ircfw_socket_send_cmd(ia_sock, NULL, construct);
+									sprintf(construct, "PRIVMSG %s :SHUTDOWN   Shutdown the bot", nick);
+									ircfw_socket_send_cmd(ia_sock, NULL, construct);
+								} else if(strcasecmp(prm, "shutdown") == 0) {
+									if(strcmp(admin, nick) == 0) {
+										loop = false;
+									} else {
+										sprintf(construct, "PRIVMSG %s :You must be an admin to use this", nick);
+										ircfw_socket_send_cmd(ia_sock, NULL, construct);
+									}
+									break;
+								} else {
+									sprintf(construct, "PRIVMSG %s :Unknown command `%s'. See HELP.", nick, prm);
+									ircfw_socket_send_cmd(ia_sock, NULL, construct);
+									break;
+								}
+
+								incr = i + 1;
+								if(oldc == 0) break;
+							}
+						}
+						free(prm);
 					}
 
 					free(nick);

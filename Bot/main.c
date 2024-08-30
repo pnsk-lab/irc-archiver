@@ -15,6 +15,7 @@ extern bool ia_do_log;
 char* host = NULL;
 int port = 0;
 char* nickname = NULL;
+char* database = NULL;
 char* username = NULL;
 char* realname = NULL;
 char* password = NULL;
@@ -75,6 +76,9 @@ int main(int argc, char** argv) {
 							host = ia_strdup(value);
 						} else if(strcmp(key, "port") == 0) {
 							port = atoi(value);
+						} else if(strcmp(key, "database") == 0) {
+							if(database != NULL) free(database);
+							database = ia_strdup(value);
 						} else if(strcmp(key, "username") == 0) {
 							if(username != NULL) free(username);
 							username = ia_strdup(value);
@@ -112,6 +116,10 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Specify host\n");
 		st = 1;
 	}
+	if(database == NULL) {
+		fprintf(stderr, "Specify database\n");
+		st = 1;
+	}
 	if(username == NULL) {
 		fprintf(stderr, "Specify username\n");
 		st = 1;
@@ -134,9 +142,11 @@ int main(int argc, char** argv) {
 	}
 	if(st == 1) return st;
 
-	printf("Bot spawning a daemon\n");
+	printf("Initializing the database\n");
+
 	pid_t pid = 0;
 	if(daemon) {
+		printf("Bot spawning a daemon\n");
 		pid = fork();
 	}
 	if(pid == 0) {
@@ -148,6 +158,7 @@ int main(int argc, char** argv) {
 
 	if(host != NULL) free(host);
 	if(realname != NULL) free(realname);
+	if(database != NULL) free(database);
 	if(username != NULL) free(username);
 	if(nickname != NULL) free(nickname);
 	if(password != NULL) free(password);
