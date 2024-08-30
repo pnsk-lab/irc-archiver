@@ -3,13 +3,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
+#include <stdbool.h>
 
 #include "ia_util.h"
-#include "ia_util.h"
+#include "ia_bot.h"
+
+extern bool ia_do_log;
+
+char* host = NULL;
+int port = 0;
+char* username = NULL;
+char* password = NULL;
+char* admin = NULL;
 
 int main(int argc, char** argv) {
-	const char* fn = argv[1] == NULL ? "archiver.ini" : argv[1];
+	const char* fn = "archiver.ini";
+	int i;
+	bool daemon = true;
+	for(i = 1; i < argc; i++) {
+		if(argv[i][0] == '-') {
+			if(strcmp(argv[i], "-D") == 0) {
+				ia_do_log = true;
+				daemon = false;
+			} else {
+				fprintf(stderr, "Unknown option: %s\n", argv[i]);
+				return 1;
+			}
+		} else {
+			fn = argv[i];
+		}
+	}
+
 	FILE* f = fopen(fn, "r");
 	if(f == NULL) {
 		fprintf(stderr, "Could not open the config: %s\n", fn);
@@ -23,13 +49,7 @@ int main(int argc, char** argv) {
 	fread(buf, s.st_size, 1, f);
 	buf[s.st_size] = 0;
 
-	int i;
 	int incr = 0;
-
-	char* host = NULL;
-	int port = 0;
-	char* username = NULL;
-	char* password = NULL;
 
 	for(i = 0;; i++) {
 		if(buf[i] == 0 || buf[i] == '\n') {
@@ -55,6 +75,9 @@ int main(int argc, char** argv) {
 						} else if(strcmp(key, "password") == 0) {
 							if(password != NULL) free(password);
 							password = ia_strdup(value);
+						} else if(strcmp(key, "admin") == 0) {
+							if(admin != NULL) free(admin);
+							admin = ia_strdup(value);
 						}
 
 						break;
@@ -82,9 +105,26 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Specify password\n");
 		st = 1;
 	}
+	if(admin == NULL) {
+		fprintf(stderr, "Specify admin\n");
+		st = 1;
+	}
 	if(st == 1) return st;
+
+	printf("Bot spawning a daemon\n");
+	pid_t pid = 0;
+	if(daemon) {
+		pid = fork();
+	}
+	if(pid == 0) {
+		ia_bot_loop();
+		_exit(0);
+	} else {
+		printf("Spawned daemon, I am exiting\n");
+	}
 
 	if(host != NULL) free(host);
 	if(username != NULL) free(username);
 	if(password != NULL) free(password);
+	if(admin != NULL) free(admin);
 }
