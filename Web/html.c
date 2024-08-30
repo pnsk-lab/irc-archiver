@@ -47,13 +47,16 @@ int web_html_generate(const char* name, web_range_t range) {
 	if(f != NULL) {
 		char* htmlesc = web_html_escape(name);
 		char* title = ia_strcat("Archive: ", htmlesc);
-		fprintf(f, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n");
+		fprintf(f, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
 		fprintf(f, "<html>\n");
 		fprintf(f, "	<head>\n");
 		fprintf(f, "		<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">\n");
 		fprintf(f, "		<title>%s</title>\n", title);
 		fprintf(f, "	</head>\n");
 		fprintf(f, "	<body>\n");
+		fprintf(f, "		<div style=\"text-align: center; background-color: #0000e0;\">\n");
+		fprintf(f, "			<h1>%s</h1>\n", title);
+		fprintf(f, "		</div>\n");
 		fprintf(f, "	</body>\n");
 		fprintf(f, "</html>\n");
 		fclose(f);
