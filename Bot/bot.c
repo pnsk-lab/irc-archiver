@@ -3,6 +3,7 @@
 #include "ia_bot.h"
 
 #include "ia_util.h"
+#include "ia_db.h"
 
 #include "ircfw.h"
 
@@ -35,6 +36,7 @@ extern char* realname;
 extern char* nickname;
 extern char* username;
 extern char* password;
+extern char* nickserv;
 extern char* channels[];
 extern int port;
 
@@ -132,6 +134,10 @@ void ia_bot_loop(void) {
 				}
 				sprintf(construct, "NOTICE %s :IRC-Archiver %s is ready to accept requests", admin, IRCARC_VERSION);
 				ircfw_socket_send_cmd(ia_sock, NULL, construct);
+				if(nickserv != NULL) {
+					sprintf(construct, "PRIVMSG NickServ :%s", nickserv);
+					ircfw_socket_send_cmd(ia_sock, NULL, construct);
+				}
 			}
 		} else {
 			if(strcasecmp(ircfw_message.command, "PING") == 0) {
@@ -167,6 +173,7 @@ void ia_bot_loop(void) {
 						}
 					} else if(sentin[0] == '#') {
 						/* This was sent in channel ; log it */
+						ia_db_put(nick, sentin, msg);
 					} else {
 						/* Command, I guess */
 						int i;

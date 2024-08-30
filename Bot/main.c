@@ -9,15 +9,18 @@
 
 #include "ia_util.h"
 #include "ia_bot.h"
+#include "ia_db.h"
 
 extern bool ia_do_log;
 
 char* host = NULL;
 int port = 0;
 char* nickname = NULL;
+char* webroot = NULL;
 char* database = NULL;
 char* username = NULL;
 char* realname = NULL;
+char* nickserv = NULL;
 char* password = NULL;
 char* admin = NULL;
 char* channels[128];
@@ -94,6 +97,12 @@ int main(int argc, char** argv) {
 						} else if(strcmp(key, "realname") == 0) {
 							if(realname != NULL) free(realname);
 							realname = ia_strdup(value);
+						} else if(strcmp(key, "webroot") == 0) {
+							if(webroot != NULL) free(webroot);
+							webroot = ia_strdup(value);
+						} else if(strcmp(key, "nickserv") == 0) {
+							if(nickserv != NULL) free(nickserv);
+							nickserv = ia_strdup(value);
 						} else if(strcmp(key, "channel") == 0) {
 							channels[chanincr++] = ia_strdup(value);
 							channels[chanincr] = NULL;
@@ -136,6 +145,10 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Specify admin\n");
 		st = 1;
 	}
+	if(webroot == NULL) {
+		fprintf(stderr, "Specify webroot\n");
+		st = 1;
+	}
 	if(realname == NULL) {
 		fprintf(stderr, "Specify realname\n");
 		st = 1;
@@ -143,6 +156,11 @@ int main(int argc, char** argv) {
 	if(st == 1) return st;
 
 	printf("Initializing the database\n");
+
+	if(ia_db_init() != 0) {
+		fprintf(stderr, "Failed to open database\n");
+		goto cleanup;
+	}
 
 	pid_t pid = 0;
 	if(daemon) {
@@ -156,7 +174,10 @@ int main(int argc, char** argv) {
 		printf("Spawned daemon, I am exiting\n");
 	}
 
+cleanup:
 	if(host != NULL) free(host);
+	if(nickserv != NULL) free(nickserv);
+	if(webroot != NULL) free(webroot);
 	if(realname != NULL) free(realname);
 	if(database != NULL) free(database);
 	if(username != NULL) free(username);
@@ -166,4 +187,5 @@ int main(int argc, char** argv) {
 	for(i = 0; channels[i] != NULL; i++) {
 		free(channels[i]);
 	}
+	return st;
 }
