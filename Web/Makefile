@@ -13,7 +13,7 @@ web.a: $(OBJS)
 	$(AR) rcs $@ $(OBJS)
 
 .c.o:
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -I $(PWD)/Bot -c -o $@ $<
 
 clean:
 	rm -f *.a *.o
