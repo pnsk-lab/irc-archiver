@@ -5,7 +5,7 @@ include $(PWD)/Platform/$(PLATFORM).mk
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-OBJS = main.o util.o bot.o
+OBJS = main.o util.o bot.o ircfw.o
 
 all: ircarc$(EXEC)
 

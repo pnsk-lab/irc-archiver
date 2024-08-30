@@ -14,9 +14,13 @@ extern bool ia_do_log;
 
 char* host = NULL;
 int port = 0;
+char* nickname = NULL;
 char* username = NULL;
+char* realname = NULL;
 char* password = NULL;
 char* admin = NULL;
+char* channels[128];
+int chanincr;
 
 int main(int argc, char** argv) {
 	const char* fn = "archiver.ini";
@@ -51,6 +55,8 @@ int main(int argc, char** argv) {
 
 	int incr = 0;
 
+	channels[0] = NULL;
+
 	for(i = 0;; i++) {
 		if(buf[i] == 0 || buf[i] == '\n') {
 			char oldc = buf[i];
@@ -72,12 +78,21 @@ int main(int argc, char** argv) {
 						} else if(strcmp(key, "username") == 0) {
 							if(username != NULL) free(username);
 							username = ia_strdup(value);
+						} else if(strcmp(key, "nickname") == 0) {
+							if(nickname != NULL) free(nickname);
+							nickname = ia_strdup(value);
 						} else if(strcmp(key, "password") == 0) {
 							if(password != NULL) free(password);
 							password = ia_strdup(value);
 						} else if(strcmp(key, "admin") == 0) {
 							if(admin != NULL) free(admin);
 							admin = ia_strdup(value);
+						} else if(strcmp(key, "realname") == 0) {
+							if(realname != NULL) free(realname);
+							realname = ia_strdup(value);
+						} else if(strcmp(key, "channel") == 0) {
+							channels[chanincr++] = ia_strdup(value);
+							channels[chanincr] = NULL;
 						}
 
 						break;
@@ -101,12 +116,20 @@ int main(int argc, char** argv) {
 		fprintf(stderr, "Specify username\n");
 		st = 1;
 	}
+	if(nickname == NULL) {
+		fprintf(stderr, "Specify nickname\n");
+		st = 1;
+	}
 	if(password == NULL) {
 		fprintf(stderr, "Specify password\n");
 		st = 1;
 	}
 	if(admin == NULL) {
 		fprintf(stderr, "Specify admin\n");
+		st = 1;
+	}
+	if(realname == NULL) {
+		fprintf(stderr, "Specify realname\n");
 		st = 1;
 	}
 	if(st == 1) return st;
@@ -124,7 +147,12 @@ int main(int argc, char** argv) {
 	}
 
 	if(host != NULL) free(host);
+	if(realname != NULL) free(realname);
 	if(username != NULL) free(username);
+	if(nickname != NULL) free(nickname);
 	if(password != NULL) free(password);
 	if(admin != NULL) free(admin);
+	for(i = 0; channels[i] != NULL; i++) {
+		free(channels[i]);
+	}
 }
