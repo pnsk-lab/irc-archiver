@@ -173,7 +173,7 @@ void ia_bot_loop(void) {
 					if(msg[0] == 1 && msg[strlen(msg) - 1] == 1) {
 						/* CTCP */
 						if(strcasecmp(msg, "\x01VERSION\x01") == 0) {
-							sprintf(construct, "NOTICE %s :\x01VERSION IRC-Archiver %s / IRC Frameworks %s: http://svn.nishi.boats/repo/irc-archiver\x01", nick, IRCARC_VERSION, IRCFW_VERSION);
+							sprintf(construct, "NOTICE %s :\x01VERSION IRC-Archiver %s / IRC Frameworks %s: http://nishi.boats/ircarc\x01", nick, IRCARC_VERSION, IRCFW_VERSION);
 							ircfw_socket_send_cmd(ia_sock, NULL, construct);
 						}
 					} else if(sentin[0] == '#') {
