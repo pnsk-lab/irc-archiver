@@ -222,6 +222,9 @@ void ia_bot_loop(void) {
 											if(chn == NULL) {
 												sprintf(construct, "PRIVMSG %s :Insufficient arguments", nick);
 												ircfw_socket_send_cmd(ia_sock, NULL, construct);
+											} else if(strcmp(name, "index") == 0) {
+												sprintf(construct, "PRIVMSG %s :You cannot use that name", nick);
+												ircfw_socket_send_cmd(ia_sock, NULL, construct);
 											} else {
 												web_range_t range;
 												struct tm from_tm;
@@ -246,6 +249,15 @@ void ia_bot_loop(void) {
 													}
 													tto = mktime(&to_tm);
 												}
+
+												char* hpath = ia_strcat4(webroot, "/", name, ".html");
+												struct stat s;
+												if(stat(hpath, &s) == 0) {
+													sprintf(construct, "PRIVMSG %s :Archive which has the same name already exists", nick);
+													ircfw_socket_send_cmd(ia_sock, NULL, construct);
+													break;
+												}
+
 												int j;
 												bool found = false;
 												for(j = 0; channels[j] != NULL; j++) {

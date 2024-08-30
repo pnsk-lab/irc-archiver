@@ -75,7 +75,7 @@ char* web_html_escape(const char* html) {
 		free(tmp); \
 	}
 
-int mtimesort(const struct dirent** d1_, const struct dirent** d2_){
+int mtimesort(const struct dirent** d1_, const struct dirent** d2_) {
 	struct dirent* d1 = (struct dirent*)d1_;
 	struct dirent* d2 = (struct dirent*)d2_;
 	char* d1_path = ia_strcat3(webroot, "/", d1->d_name);
@@ -261,9 +261,9 @@ int web_html_generate(const char* name, web_range_t range) {
 	free(path);
 	path = ia_strcat(webroot, "/index.html");
 	f = fopen(path, "w");
-	if(f != NULL){
+	if(f != NULL) {
 		char* title = ia_strdup("Index");
-		struct dirent **namelist;
+		struct dirent** namelist;
 		int n = scandir(webroot, &namelist, NULL, mtimesort);
 		fprintf(f, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n");
 		fprintf(f, "<html>\n");
@@ -283,8 +283,8 @@ int web_html_generate(const char* name, web_range_t range) {
 		fprintf(f, "				<th>Name</th><th style=\"width: 250px;\">Archived at</th><th style=\"width: 100px;\">Link</th>");
 		fprintf(f, "			</tr>\n");
 		int i;
-		for(i = 0; i < n; i++){
-			if(strcmp(namelist[i]->d_name, "..") != 0 && strcmp(namelist[i]->d_name, ".") != 0 && strcmp(namelist[i]->d_name, "index.html") != 0){
+		for(i = 0; i < n; i++) {
+			if(strcmp(namelist[i]->d_name, "..") != 0 && strcmp(namelist[i]->d_name, ".") != 0 && strcmp(namelist[i]->d_name, "index.html") != 0) {
 				struct stat s;
 				char* np = ia_strcat3(webroot, "/", namelist[i]->d_name);
 				stat(np, &s);
@@ -293,8 +293,8 @@ int web_html_generate(const char* name, web_range_t range) {
 				strftime(date, 512, "%Y/%m/%d %H:%M:%S UTC", tm);
 				char* name = ia_strdup(namelist[i]->d_name);
 				int j;
-				for(j = strlen(name) - 1; j >= 0; j--){
-					if(name[j] == '.'){
+				for(j = strlen(name) - 1; j >= 0; j--) {
+					if(name[j] == '.') {
 						name[j] = 0;
 						break;
 					}
