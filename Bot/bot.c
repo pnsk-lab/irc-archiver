@@ -23,6 +23,10 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
+#ifdef __FreeBSD__
+#include <netinet/in.h>
+#endif
+
 #define IRCARC_VERSION "1.01"
 
 const char* ircarc_version = IRCARC_VERSION;
