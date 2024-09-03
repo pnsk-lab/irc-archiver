@@ -281,6 +281,9 @@ void ia_bot_loop(void) {
 												range.to = tto;
 												range.channel = chn;
 												web_html_generate(name, range);
+
+												sprintf(construct, "PRIVMSG %s :Archived this channel", chn);
+												ircfw_socket_send_cmd(ia_sock, NULL, construct);
 											}
 										}
 									} else {
